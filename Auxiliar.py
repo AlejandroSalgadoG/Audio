@@ -1,6 +1,6 @@
 import wave
 import numpy as np
-from scipy.io.wavfile import write
+import pyaudio
 
 def read_data(filename, chunk=1024, fs=44032, seconds=3):
     data_size = int(fs / chunk * seconds) * chunk
@@ -16,3 +16,20 @@ def save_data(signal, filename, fs=44032):
     wf.setframerate( fs )
     wf.writeframes(data)
     wf.close()
+
+def read_frames(signal, chunk):
+    for start in range(0, len(signal), chunk):
+        yield signal[start:start + chunk]
+
+def reproduce_data(signal, chunk=1024, fs=44032):
+    audio = pyaudio.PyAudio()
+    stream = audio.open( format=pyaudio.paInt16, channels=1, rate=fs, output=True )
+    for data in read_frames(signal.tobytes(), chunk*2): stream.write(data)
+    stream.close()
+    audio.terminate()
+
+def get_magnitude_phase( fourier_coef ):
+    return abs(fourier_coef)*2, np.angle(fourier_coef)
+
+def reconstruct_signal( fourier_coef ):
+    return np.real( np.fft.ifft( fourier_coef ) ).astype( np.int16 )
