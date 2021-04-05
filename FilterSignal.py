@@ -1,16 +1,21 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
 
-from Auxiliar import read_data, reproduce_data, get_magnitude_phase, reconstruct_signal
+from Auxiliar import read_data, reproduce_data, cos_wave, difference, get_magnitude_phase
 
-signal = read_data( "Records/a.wav" )
+signal = read_data( "Records/b1.wav" )
 signal_idx = np.arange( signal.size ) 
 
 fs = 44032
-cut = 80000
+cut = 44032
 x = signal[cut:cut+fs]
 x_idx = signal_idx[cut:cut+fs]
+
+#plt.plot(signal_idx, signal)
+#plt.plot(x_idx, x)
+#plt.show()
 
 n = x.size
 dt = 1/n # inter sample time
@@ -20,29 +25,41 @@ df = 1/p # frequency resolution
 
 t = np.arange(0,p,dt) # time
 nyquist = math.floor( t.size/2 ) + 1
-fourier_coef = np.fft.fft( x )
-amplitudes, angles = get_magnitude_phase( fourier_coef / n )
+coef = np.fft.fft( x )[:nyquist] / n
 
-# filter signal
-fourier_coef[ 2100: ] = 0
+t_f = np.arange(nyquist)
+amps, phas = get_magnitude_phase( coef )
 
 fig, (ax1, ax2) = plt.subplots(2)
-
-w = np.arange(nyquist)
-new_amplitudes, new_angles = get_magnitude_phase( fourier_coef[:nyquist] / n )
-ax1.scatter( w, new_amplitudes, s=7 )
-ax2.scatter( w, new_angles, s=7 )
-
-ax1.set_ylabel("Amplitude")
-ax2.set_ylabel("Phase")
-ax2.set_xlabel("Frequency")
+ax1.scatter( t_f, amps, s=7 )
+ax2.scatter( t_f, phas, s=7 )
 plt.show()
 
-filtered_signal = reconstruct_signal( fourier_coef )
+d_amps = difference( amps )
+mean, std = d_amps.mean(), d_amps.std()
+noise_idx = (d_amps >= mean-std) & (d_amps <= mean+std)
+coef[ np.append(False, noise_idx) ] = 0
 
-plt.plot( signal_idx, signal )
-plt.plot( x_idx, filtered_signal )
+amps, phas = get_magnitude_phase( coef )
+good_idx, _ = find_peaks( amps )
+bad_idx = np.ones( nyquist, dtype=np.bool )
+bad_idx[ good_idx ] = False
+coef[ bad_idx ] = 0
+
+amps, phas = get_magnitude_phase( coef )
+fig, (ax1, ax2) = plt.subplots(2)
+ax1.scatter( t_f, amps, s=7 )
+ax2.scatter( t_f, phas, s=7 )
 plt.show()
 
-reproduce_data( x )
-reproduce_data( filtered_signal * 2 )
+waves = np.array([ cos_wave( f, amps[f], phas[f], t ) for f, c in enumerate(coef) if c != 0 ])
+waves[0] = waves[0] / 2
+x_p = np.sum( waves, axis=0, dtype=np.int16 )
+
+plt.plot(x)
+plt.plot(x_p)
+plt.show()
+
+for i in range(24):
+    reproduce_data( x )
+    reproduce_data( x_p )
