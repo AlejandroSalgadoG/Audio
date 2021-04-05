@@ -33,3 +33,7 @@ def get_magnitude_phase( fourier_coef ):
 
 def reconstruct_signal( fourier_coef ):
     return np.real( np.fft.ifft( fourier_coef ) ).astype( np.int16 )
+
+def cos_wave( freq, amp, phase, t ):
+    wave = amp * np.cos( 2*np.pi*freq*t + phase )
+    return wave.astype(np.int16)
