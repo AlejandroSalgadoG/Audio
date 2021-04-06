@@ -35,7 +35,7 @@ for note in notes:
     amps, phas = get_magnitude_phase( coef[:nyquist] / n )
     
     n_down, dt_down, p_down, df_down, nyquist_down, t_down, coef_down = apply_fourier( x_down )
-    amps_down, phas_down = get_magnitude_phase( coef_down[:nyquist_down] / n )
+    amps_down, phas_down = get_magnitude_phase( coef_down[:nyquist_down] / n_down )
     
     plt.plot( np.arange(nyquist), amps )
     plt.plot( np.arange(nyquist_down), amps_down )
