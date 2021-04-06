@@ -55,3 +55,8 @@ def apply_fourier( signal ):
     nyquist = math.floor( t.size/2 ) + 1
     coef = np.fft.fft( signal )
     return n, dt, p, df, nyquist, t, coef
+
+def invert_fourier( amps, phas, t ):
+    waves = np.array([ cos_wave( f, a, p, t ) for f, (a, p) in enumerate( zip(amps, phas) ) if a != 0 ])
+    waves[0] = waves[0] / 2
+    return np.sum( waves, axis=0, dtype=np.int16 )

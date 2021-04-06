@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
-from Auxiliar import read_data, reproduce_data, cos_wave, difference, apply_fourier, get_magnitude_phase
+from Auxiliar import read_data, reproduce_data, cos_wave, difference, apply_fourier, get_magnitude_phase, invert_fourier
 
-signal = read_data( "Records/c1_down.wav" )
+signal = read_data( "Records/c1.wav" )
 signal_idx = np.arange( signal.size ) 
 
 fs = 44032
@@ -38,9 +38,7 @@ plt.plot( t_f, amps )
 plt.plot( t_f, new_amps )
 plt.show()
 
-waves = np.array([ cos_wave( f, new_amps[f], new_phas[f], t ) for f, c in enumerate(coef) if c != 0 ])
-waves[0] = waves[0] / 2
-x_p = np.sum( waves, axis=0, dtype=np.int16 )
+x_p = invert_fourier( new_amps, new_phas, t )
 
 plt.plot(x)
 plt.plot(x_p)
