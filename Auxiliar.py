@@ -1,3 +1,4 @@
+import math
 import wave
 import numpy as np
 import pyaudio
@@ -37,3 +38,20 @@ def reconstruct_signal( fourier_coef ):
 def cos_wave( freq, amp, phase, t ):
     wave = amp * np.cos( 2*np.pi*freq*t + phase )
     return wave.astype(np.int16)
+
+def difference(data, order=1): 
+    if order <= 0: return data
+    return difference(data[1:] - data[:-1], order-1)
+
+def down_sample( signal, step=2 ):
+    return signal[::step]
+
+def apply_fourier( signal ):
+    n = signal.size
+    dt = 1/n # inter sample time
+    p = n*dt # period
+    df = 1/p # frequency resolution
+    t = np.arange(0,p,dt) # time
+    nyquist = math.floor( t.size/2 ) + 1
+    coef = np.fft.fft( signal )
+    return n, dt, p, df, nyquist, t, coef
