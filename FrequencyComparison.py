@@ -5,8 +5,11 @@ from scipy.signal import find_peaks
 
 from Auxiliar import read_data, reproduce_data, cos_wave, apply_fourier, get_magnitude_phase
 
-data_files = ["a.wav", "e.wav", "i.wav", "o.wav", "u.wav"]
-#data_files = ["a_down.wav", "e_down.wav", "i_down.wav", "o_down.wav", "u_down.wav"]
+data_files = ["a_1.wav", "a_2.wav", "a_3.wav", "a_4.wav", "a_5.wav"]
+#data_files = ["e_1.wav", "e_2.wav", "e_3.wav", "e_4.wav", "e_5.wav"]
+#data_files = ["i_1.wav", "i_2.wav", "i_3.wav", "i_4.wav", "i_5.wav"]
+#data_files = ["o_1.wav", "o_2.wav", "o_3.wav", "o_4.wav", "o_5.wav"]
+#data_files = ["u_1.wav", "u_2.wav", "u_3.wav", "u_4.wav", "u_5.wav"]
 
 #data_files = ["c1.wav", "c2.wav", "c3.wav", "c4.wav", "c5.wav"]
 #data_files = ["cs1.wav", "cs2.wav", "cs3.wav", "cs4.wav"]
@@ -31,7 +34,7 @@ data_files = ["a.wav", "e.wav", "i.wav", "o.wav", "u.wav"]
 #data_files = ["c4.wav", "cs4.wav", "d4.wav", "ds4.wav", "e4.wav", "f4.wav", "fs4.wav", "g4.wav", "gs4.wav", "a4.wav", "as4.wav", "b4.wav"]
 
 fs = 44032
-cut = 44032*2
+cut = 44032
 f_cut = 8000
 
 fig, ax = plt.subplots( len(data_files) )

@@ -5,7 +5,7 @@ chunk = 1024
 sample_format = pyaudio.paInt16 
 channels = 1
 fs = 44032
-seconds = 3
+seconds = 2
 n_frames = int(fs / chunk * seconds)
 
 filename = "output.wav"
