@@ -3,9 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
-from Auxiliar import read_data, reproduce_data, cos_wave, get_magnitude_phase
+from Auxiliar import read_data, reproduce_data, cos_wave, apply_fourier, get_magnitude_phase
 
-data_files = ["c1.wav", "c2.wav", "c3.wav", "c4.wav", "c5.wav"]
+data_files = ["a.wav", "e.wav", "i.wav", "o.wav", "u.wav"]
+#data_files = ["a_down.wav", "e_down.wav", "i_down.wav", "o_down.wav", "u_down.wav"]
+
+#data_files = ["c1.wav", "c2.wav", "c3.wav", "c4.wav", "c5.wav"]
 #data_files = ["cs1.wav", "cs2.wav", "cs3.wav", "cs4.wav"]
 #data_files = ["d1.wav", "d2.wav", "d3.wav", "d4.wav"]
 #data_files = ["ds1.wav", "ds2.wav", "ds3.wav", "ds4.wav"]
@@ -28,7 +31,7 @@ data_files = ["c1.wav", "c2.wav", "c3.wav", "c4.wav", "c5.wav"]
 #data_files = ["c4.wav", "cs4.wav", "d4.wav", "ds4.wav", "e4.wav", "f4.wav", "fs4.wav", "g4.wav", "gs4.wav", "a4.wav", "as4.wav", "b4.wav"]
 
 fs = 44032
-cut = 44032
+cut = 44032*2
 f_cut = 8000
 
 fig, ax = plt.subplots( len(data_files) )
@@ -40,16 +43,10 @@ for idx, data_file in enumerate(data_files):
     x = signal[cut:cut+fs]
     x_idx = signal_idx[cut:cut+fs]
 
-    n = x.size
-    dt = 1/n # inter sample time
-    p = n*dt # period
-    df = 1/p # frequency resolution
-    t = np.arange(0,p,dt) # time
-    nyquist = math.floor( t.size/2 ) + 1
-    coef = np.fft.fft( x )[:nyquist] / n
+    n, dt, p, df, nyquist, t, coef = apply_fourier( x )
+    amps, phas = get_magnitude_phase( coef[:nyquist] / n )
 
-    amps, phas = get_magnitude_phase( coef )
-    ax[idx].scatter( np.arange(f_cut), amps[:f_cut], s=7 )
+    ax[idx].plot( np.arange(f_cut), amps[:f_cut] )
     ax[idx].legend( [data_file] )
     
 plt.show()
