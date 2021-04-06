@@ -4,10 +4,9 @@ import pyaudio
 filename = 'output.wav'
 
 chunk = 1024 
-fs = 44100
-seconds = 3
-n_frames = int(fs / chunk * seconds) 
-data_size = n_frames * chunk
+fs = 44032
+seconds = 2
+n_frames = int(fs / chunk) * seconds
 sample_format = pyaudio.paInt16  # 16 bits per sample
 
 audio = pyaudio.PyAudio()
