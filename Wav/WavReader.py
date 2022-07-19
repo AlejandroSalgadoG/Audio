@@ -51,7 +51,3 @@ class WavReader:
 
     def get_data(self) -> List[int]:
         return unpack(f"<{self.n_data_samples}h", self.raw_data[44:])
-
-wav_reader = WavReader("Data/hola.wav")
-data = wav_reader.get_data()
-print(data)
