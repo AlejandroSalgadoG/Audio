@@ -1,23 +1,39 @@
 import matplotlib.pyplot as plt
-from Fourier import FourierHandler
+import numpy as np
+import os
 
+from Fourier import FrequencyDomain
 from Wav.WavReader import WavReader
 from Wav.WavWriter import WavWriter
 
-wav_reader = WavReader("Data/sin2.wav")
-data = wav_reader.get_data()
+max_freq = 4000
 
-plt.plot(data)
+omega = np.arange(max_freq)
 
-fourier = FourierHandler(data)
-coeff = fourier.time_to_freq()
-amps = fourier.get_amplitudes(coeff)
+def norm_rows(matrix):
+    row_min, row_max =  matrix.min(axis=1, keepdims=True), matrix.max(axis=1, keepdims=True)
+    return (matrix - row_min) / (row_max - row_min)
 
-plt.plot(amps)
+data = [WavReader(f"Data/hola/{file_name}").get_data() for file_name in os.listdir("Data/hola")]
+freq_data = [FrequencyDomain(sample) for sample in data]
+amps = np.array([f_data.get_amplitudes()[:max_freq] for f_data in freq_data])
+norm_amps = norm_rows(amps)
 
-signal = fourier.freq_to_time(coeff)
+mean_amp = norm_amps.mean(axis=0)
+std_amp = norm_amps.std(axis=0)
 
-plt.plot(signal)
+up_amp = mean_amp + std_amp
+down_amp = mean_amp - std_amp
 
-wav_writer = WavWriter(signal)
-wav_writer.write_data("Data/output.wav")
+fig, ax = plt.subplots()
+ax.plot(mean_amp, linewidth=0.25, color="blue")
+ax.plot(norm_amps[0,:], linewidth=1, color="red")
+
+ax.fill_between(omega, mean_amp, up_amp, color="blue", alpha=0.2)
+ax.fill_between(omega, mean_amp, down_amp, color="blue", alpha=0.2)
+
+ax.set_ylim([0, 1])
+
+plt.show()
+
+print("done")

@@ -2,21 +2,32 @@ import numpy as np
 
 from typing import List
 
-class FourierHandler:
+class FrequencyDomain:
     def __init__(self, signal: List[int]):
         self.signal = signal
         self.n_samples = len(signal)
-        self.nyquist = self.get_nyquist(self.n_samples)
+        self.nyquist = self.get_nyquist()
+        self.coeff = self.time_to_freq()
+        self.pos_coeff = self.coeff[:self.nyquist]
 
-    def get_nyquist(self, size: int) -> int:
-        return size // 2 if size % 2 == 0 else (size - 1) // 2
+    def get_nyquist(self) -> int:
+        return self.n_samples // 2 if self.n_samples % 2 == 0 else (self.n_samples - 1) // 2
 
     def time_to_freq(self) -> List[np.complex128]:
         return np.fft.fft(self.signal) / self.n_samples
 
-    def freq_to_time(self, coeff: List[np.complex128]) -> List[int]:
-        return np.fft.ifft(coeff * self.n_samples)
+    def get_amplitudes(self) -> List[int]:
+        return abs(self.pos_coeff) * 2
 
-    def get_amplitudes(self, coeff: List[np.complex128]) -> List[int]:
-        positive_coeff = coeff[:self.nyquist]
-        return abs(positive_coeff) * 2
+    def get_phases(self) -> List[int]:
+        return np.angle(self.pos_coeff)
+
+
+class TimeDomain:
+    def __init__(self, freq_signal: List[np.complex128]):
+        self.coeff = freq_signal
+        self.n_samples = len(freq_signal)
+        self.signal = self.freq_to_time()
+
+    def freq_to_time(self) -> List[int]:
+        return np.fft.ifft(self.coeff * self.n_samples)
