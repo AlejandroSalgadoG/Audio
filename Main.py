@@ -14,7 +14,7 @@ def norm_rows(matrix):
     row_min, row_max =  matrix.min(axis=1, keepdims=True), matrix.max(axis=1, keepdims=True)
     return (matrix - row_min) / (row_max - row_min)
 
-data = [WavReader(f"Data/hola/{file_name}").get_data() for file_name in os.listdir("Data/hola")]
+data = [WavReader(f"Data/vowels/a/{file_name}").get_data() for file_name in os.listdir("Data/vowels/a")]
 freq_data = [FrequencyDomain(sample) for sample in data]
 amps = np.array([f_data.get_amplitudes()[:max_freq] for f_data in freq_data])
 norm_amps = norm_rows(amps)

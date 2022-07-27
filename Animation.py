@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from Fourier import FrequencyDomain
-from Wav.WavReader import WavReader, batch_data
+from Utils import batch_data
+from Wav.WavReader import WavReader
 
 max_freq = 8000
 omega = np.arange(max_freq)
