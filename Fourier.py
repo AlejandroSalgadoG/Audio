@@ -16,10 +16,10 @@ class FrequencyDomain:
     def time_to_freq(self) -> List[np.complex128]:
         return np.fft.fft(self.signal) / self.n_samples
 
-    def get_amplitudes(self) -> List[int]:
+    def get_amplitudes(self) -> List[np.float64]:
         return abs(self.pos_coeff) * 2
 
-    def get_phases(self) -> List[int]:
+    def get_phases(self) -> List[np.float64]:
         return np.angle(self.pos_coeff)
 
 
@@ -27,7 +27,7 @@ class TimeDomain:
     def __init__(self, freq_signal: List[np.complex128]):
         self.coeff = freq_signal
         self.n_samples = len(freq_signal)
-        self.signal = self.freq_to_time()
+        self.signal = self.freq_to_time().astype(int)
 
-    def freq_to_time(self) -> List[int]:
-        return np.fft.ifft(self.coeff * self.n_samples)
+    def freq_to_time(self) -> List[np.float64]:
+        return np.real( np.fft.ifft(self.coeff * self.n_samples) )
