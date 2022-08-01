@@ -1,22 +1,17 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
-from Fourier import FrequencyDomain
+from Fourier import Time2Freq, TimeData
 from Utils import batch_data
 from Wav.WavReader import WavReader
 
 max_freq = 8000
-omega = np.arange(max_freq)
 
 def norm(data):
     min_s, max_s =  data.min(), data.max()
     return (data - min_s) / (max_s - min_s)
 
 reader = WavReader(f"Data/vowels/all/all.wav")
-data = reader.get_data()
-
-split1 = batch_data(data, size=max_freq*2)
-split2 = batch_data(data, size=max_freq*2, offset=max_freq)
+t_data = reader.get_data()
 
 plt.ion()
 
@@ -26,16 +21,19 @@ fig, axis = plt.subplot_mosaic([
     ["fourier1", "fourier2"],
 ])
 
-axis["signal"].plot(data, linewidth=1, color="blue")
+axis["signal"].plot(t_data.data, linewidth=1, color="blue")
 axis["signal"].set_xlim([0, reader.n_data_samples])
 axis["signal"].set_ylim([-6e3, 6e3])
 
+split1 = batch_data(t_data.data, size=max_freq*2)
+split2 = batch_data(t_data.data, size=max_freq*2, offset=max_freq)
+
 for (batch1, start1, end1), (batch2, start2, end2) in zip(split1, split2):
-    freq_data1 = FrequencyDomain(batch1)
+    freq_data1 = Time2Freq.transform(TimeData(batch1))
     amps1 = freq_data1.get_amplitudes()[:max_freq]
     norm_amps1 = norm(amps1)
 
-    freq_data2 = FrequencyDomain(batch2)
+    freq_data2 = Time2Freq.transform(TimeData(batch2))
     amps2 = freq_data2.get_amplitudes()[:max_freq]
     norm_amps2 = norm(amps2)
 

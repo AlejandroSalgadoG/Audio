@@ -1,10 +1,11 @@
 from struct import pack
-from typing import List
+
+from Fourier import TimeData
 
 class WavWriter:
-    def __init__(self, data: List[int]):
-        self.data = data
-        self.n_samples = len(data)
+    def __init__(self, t_data: TimeData):
+        self.data = t_data.data
+        self.n_samples = len(self.data)
 
         self.sub_size = 16 # PCM
         self.audio_format = 1 # PCM

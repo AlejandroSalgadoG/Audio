@@ -1,6 +1,8 @@
+from numpy import array
 from struct import unpack
 from typing import List
 
+from Fourier import TimeData
 
 class WavReader:
     def __init__(self, wav_file_name: str):
@@ -50,5 +52,8 @@ class WavReader:
         [self.data_size] = unpack("<i", self.raw_data[40:44])
         self.n_data_samples = self.data_size // self.bytes_per_sample
 
-    def get_data(self) -> List[int]:
+    def get_raw_data(self) -> List[int]:
         return unpack(f"<{self.n_data_samples}h", self.raw_data[44:])
+
+    def get_data(self) -> TimeData:
+        return TimeData(array(self.get_raw_data()))
