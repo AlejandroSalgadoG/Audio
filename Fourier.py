@@ -32,6 +32,9 @@ class TimeData:
     def get_nyquist(self) -> int:
         return (self.n_samples - 1) // 2 if self.is_odd_n_samples() else self.n_samples // 2
 
+    def extract_portion(self, start: int, end: int):
+        return TimeData(self.data[start:end])
+
 
 class Time2Freq:
     @classmethod

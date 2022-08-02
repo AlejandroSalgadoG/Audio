@@ -5,11 +5,11 @@ from Wav.WavReader import WavReader
 
 max_freq = 2000
 
-a_data = WavReader(f"Data/vowels/a/a.wav").get_data()
-e_data = WavReader(f"Data/vowels/e/e.wav").get_data()
-i_data = WavReader(f"Data/vowels/i/i.wav").get_data()
-o_data = WavReader(f"Data/vowels/o/o.wav").get_data()
-u_data = WavReader(f"Data/vowels/u/u.wav").get_data()
+a_data = WavReader(f"Data/vowels/perfect/a.wav").get_data()
+e_data = WavReader(f"Data/vowels/perfect/e.wav").get_data()
+i_data = WavReader(f"Data/vowels/perfect/i.wav").get_data()
+o_data = WavReader(f"Data/vowels/perfect/o.wav").get_data()
+u_data = WavReader(f"Data/vowels/perfect/u.wav").get_data()
 
 a_freq = Time2Freq.transform(a_data)
 e_freq = Time2Freq.transform(e_data)
