@@ -9,8 +9,11 @@ class FreqData:
         self.odd_n_samples = odd_n_samples
         self.nyquist = pos_coeff.size - 1
 
-    def get_amplitudes(self) -> List[np.float64]:
-        return abs(self.pos_coeff) * 2
+    def get_amplitudes(self, min_freq: Optional[int] = None, max_freq: Optional[int] = None) -> List[np.float64]:
+        amps = abs(self.pos_coeff) * 2
+        min_freq = 0 if min_freq is None else min_freq
+        max_freq = self.nyquist if max_freq is None else max_freq
+        return amps[min_freq:max_freq]
 
     def get_phases(self) -> List[np.float64]:
         return np.angle(self.pos_coeff)

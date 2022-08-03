@@ -5,12 +5,13 @@ from Wav.WavReader import WavReader
 
 window_size = 450
 n_times = 28
+max_freq = 2000
 
 def norm(data):
     min_s, max_s =  data.min(), data.max()
     return (data - min_s) / (max_s - min_s)
 
-reader = WavReader(f"Data/vowels/all/all.wav")
+reader = WavReader(f"Data/vowels/all/all_chop.wav")
 t_data = reader.get_data()
 
 plt.ion()
@@ -31,15 +32,15 @@ batch3 = t_data.batch(size=window_size, offset=window_size // 3 * 2)
 
 for window1, window2, window3 in zip(batch1, batch2, batch3):
     freq_data1 = Time2Freq.transform(window1.repeat(n_times))
-    amps1 = freq_data1.get_amplitudes()
+    amps1 = freq_data1.get_amplitudes(max_freq=max_freq)
     norm_amps1 = norm(amps1)
 
     freq_data2 = Time2Freq.transform(window2.repeat(n_times))
-    amps2 = freq_data2.get_amplitudes()
+    amps2 = freq_data2.get_amplitudes(max_freq=max_freq)
     norm_amps2 = norm(amps2)
 
     freq_data3 = Time2Freq.transform(window3.repeat(n_times))
-    amps3 = freq_data3.get_amplitudes()
+    amps3 = freq_data3.get_amplitudes(max_freq=max_freq)
     norm_amps3 = norm(amps3)
 
     axis["signal"].plot([window1.start, window1.end], [5e3, 5e3], color="red", linewidth=1)
@@ -64,13 +65,13 @@ for window1, window2, window3 in zip(batch1, batch2, batch3):
     axis["sub3"].set_xlim([0, window_size])
     axis["sub3"].set_ylim([-5e3, 5e3])
 
-    axis["fourier1"].set_xlim([0, freq_data1.nyquist])
+    axis["fourier1"].set_xlim([0, max_freq])
     axis["fourier1"].set_ylim([0, 1])
 
-    axis["fourier2"].set_xlim([0, freq_data2.nyquist])
+    axis["fourier2"].set_xlim([0, max_freq])
     axis["fourier2"].set_ylim([0, 1])
 
-    axis["fourier3"].set_xlim([0, freq_data3.nyquist])
+    axis["fourier3"].set_xlim([0, max_freq])
     axis["fourier3"].set_ylim([0, 1])
 
     plt.draw()
