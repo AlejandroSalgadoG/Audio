@@ -39,18 +39,26 @@ class TimeData:
         n_batch = (self.n_samples - offset) // size
 
         if n_batch == 0:
-            return self, 0, self.n_samples
+            return BatchData(self, self.data, 0, self.n_samples)
 
         for i in range(n_batch):
             start = max(i*size + offset, 0)
             end = max((i+1)*size + offset, 0)
-            yield TimeData(self.data[start:end]), start, end
+            yield BatchData(self, self.data[start:end], start, end)
 
         if end < self.n_samples:
-            yield TimeData(self.data[end:]), end, self.n_samples
+            yield BatchData(self, self.data[end:], end, self.n_samples)
 
     def repeat(self, n_times: int):
         return TimeData(np.concatenate([self.data] * n_times))
+
+
+class BatchData(TimeData):
+    def __init__(self, time_data: TimeData, data: List[np.int], start: int, end: int):
+        self.time_data = time_data
+        self.data = data
+        self.start = start
+        self.end = end
 
 
 class Time2Freq:
