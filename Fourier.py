@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import List
+from typing import List, Optional
 
 
 class FreqData:
@@ -32,7 +32,9 @@ class TimeData:
     def get_nyquist(self) -> int:
         return (self.n_samples - 1) // 2 if self.is_odd_n_samples() else self.n_samples // 2
 
-    def extract_portion(self, start: int, end: int):
+    def extract_portion(self, start: Optional[int] = None, end: Optional[int] = None):
+        start = 0 if start is None else start
+        end = self.n_samples if end is None else end
         return TimeData(self.data[start:end])
 
     def batch(self, size: int, offset: int = 0):
@@ -51,6 +53,9 @@ class TimeData:
 
     def repeat(self, n_times: int):
         return TimeData(np.concatenate([self.data] * n_times))
+
+    def concat(self, time_data):
+        return TimeData(np.concatenate([self.data, time_data.data]))
 
 
 class BatchData(TimeData):
