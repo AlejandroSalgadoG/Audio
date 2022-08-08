@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 class FreqData:
@@ -82,3 +82,54 @@ class Freq2Time:
         coeff = freq_data.get_coeff()
         time_raw_data = np.real( np.fft.ifft( coeff * coeff.size ) )
         return TimeData(time_raw_data.astype(int))
+
+
+class Sample:
+    def __init__(self, label: str, time_data: TimeData, freq_data: FreqData):
+        self.label: str = label
+        self.time_data: TimeData = time_data
+        self.freq_data: FreqData = freq_data
+
+
+class SampleFromTime:
+    @classmethod
+    def create(self, label: str, time_data: TimeData) -> Sample:
+        return Sample(label, time_data, Time2Freq.transform(time_data))
+
+
+class SampleFromFreq:
+    @classmethod
+    def create(self, label: str, freq_data: FreqData) -> Sample:
+        return Sample(label, Freq2Time.transform(freq_data), freq_data)
+
+
+class MultiSample:
+    def __init__(self):
+        self.all_samples: List[Sample] = []
+        self.samples: Dict[str, List[Sample]] = {}
+
+    def add_sample(self, sample: Sample):
+        self.all_samples.append(sample)
+
+        if sample.label not in self.samples:
+            self.samples[sample.label] = []
+
+        self.samples[sample.label].append(sample)
+
+    def add_from_time_data(self, label: str, time_data: TimeData):
+        self.add_sample( SampleFromTime.create(label, time_data) )
+
+    def add_from_freq_data(self, label: str, freq_data: FreqData):
+        self.add_sample( SampleFromFreq.create(label, freq_data) )
+
+    def get_amplitudes(self, label: str, min_freq: int, max_freq: int):
+        return ArrayList2Matrix.transform([
+            sample.freq_data.get_amplitudes(min_freq, max_freq)
+            for sample in self.samples[label]
+        ])
+
+
+class ArrayList2Matrix:
+    @classmethod
+    def transform(self, data_list: List[np.array]):
+        return np.concatenate([np.expand_dims(data, axis=0) for data in data_list])
