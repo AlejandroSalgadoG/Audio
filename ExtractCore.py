@@ -1,18 +1,65 @@
-import numpy as np
 import matplotlib.pyplot as plt
 
-from Fourier import TimeData
 from Wav.WavReader import WavReader
 from Wav.WavWriter import WavWriter
 
-# a -> 5272 - 5707 - 435 - x28
-# e -> 6254 - 6686 - 432 - x28
-# i -> 6738 - 7112 - 374 - x32
-# o -> 5314 - 5739 - 425 - x28
-# u -> 4328 - 4720 - 392 - x31
+# a   -> 5272 - 5707 - 435 - x28
+# a2  -> 3537 - 3923 - 386 - x31
+# a3  -> 4722 - 5080 - 358 - x34
+# a4  -> 5340 - 5755 - 415 - x29
+# a5  -> 6087 - 6544 - 457 - x26
+# a6  -> 4683 - 5102 - 419 - x29
+# a7  -> 5975 - 6413 - 438 - x28
+# a8  -> 3343 - 3733 - 390 - x31
+# a9  -> 4265 - 4707 - 442 - x27
+# a10 -> 5752 - 6226 - 474 - x25
 
-t_data = WavReader(f"Data/vowels/u/u.wav").get_data().extract_portion(4328, 4720)
-data = TimeData( np.concatenate([t_data.data] * 31) )
+# e   -> 6254 - 6686 - 432 - x28
+# e2  -> 7009 - 7450 - 441 - x27
+# e3  -> 4943 - 5339 - 396 - x31
+# e4  -> 5605 - 6009 - 404 - x30
+# e5  -> 7941 - 8370 - 429 - x28
+# e6  -> 5049 - 5418 - 369 - x33
+# e7  -> 5594 - 5988 - 394 - x31
+# e8  -> 4152 - 4531 - 379 - x32
+# e9  -> 4048 - 4474 - 426 - x28
+# e10 -> 6093 - 6521 - 428 - x28
+
+# i   -> 7112 - 7484 - 372 - x33
+# i2  -> 6413 - 6827 - 414 - x29
+# i3  -> 4669 - 5060 - 391 - x31
+# i4  -> 5340 - 5736 - 396 - x31
+# i5  -> 4841 - 5267 - 426 - x28
+# i6  -> 6466 - 6877 - 411 - x29
+# i7  -> 5629 - 6028 - 399 - x30
+# i8  -> 5748 - 6178 - 430 - x28
+# i9  -> 4439 - 4824 - 385 - x31
+# i10 -> 5343 - 5751 - 408 - x30
+
+# o   -> 3686 - 4091 - 405 - x30
+# o2  -> 4220 - 4637 - 417 - x29
+# o3  -> 5513 - 5903 - 390 - x31
+# o4  -> 5074 - 5486 - 412 - x29
+# o5  -> 9471 - 9955 - 484 - x25
+# o6  -> 3306 - 3770 - 464 - x26
+# o7  -> 6422 - 6916 - 494 - x24
+# o8  -> 5695 - 6111 - 416 - x29
+# o9  -> 4780 - 5214 - 434 - x28
+# o10 -> 4205 - 4617 - 412 - x29
+
+# u   -> 3939 - 4328 - 389 - x31
+# u2  -> 5798 - 6224 - 426 - x28
+# u3  -> 4408 - 4838 - 430 - x28
+# u4  -> 5544 - 5965 - 421 - x29
+# u5  -> 4296 - 4679 - 383 - x32
+# u6  -> 5093 - 5441 - 348 - x35
+# u7  -> 5017 - 5414 - 397 - x30
+# u8  -> 2977 - 3344 - 367 - x33
+# u9  -> 4330 - 4752 - 422 - x29
+# u10 -> 2863 - 3226 - 363 - x33
+
+t_data = WavReader(f"Data/vowels/u/u10.wav").get_data().extract_portion(2863, 3226)
+data = t_data.repeat( 33 )
 
 fig, axis = plt.subplot_mosaic([["time"]])
 axis["time"].plot(data.data, linewidth=1, color="blue")
@@ -21,6 +68,6 @@ axis["time"].set_xlim([0, data.n_samples])
 plt.show()
 
 writer = WavWriter(data)
-writer.write_data("Data/vowels/u/perfect_u.wav")
+writer.write_data("Data/vowels/perfect/u/u10.wav")
 
 print("done")
