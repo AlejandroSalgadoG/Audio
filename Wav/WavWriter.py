@@ -1,3 +1,4 @@
+from io import BytesIO
 from struct import pack
 
 from Fourier import TimeData
@@ -41,6 +42,13 @@ class WavWriter:
 
     def get_wav_content(self) -> bytes:
         return self.get_riff_header() + self.get_fmt_header() + self.get_data_header() + self.get_data()
+
+    def get_file_obj(self) -> BytesIO:
+        data = self.get_wav_content()
+        file_obj = BytesIO()
+        file_obj.write(data)
+        file_obj.seek(0)
+        return file_obj
 
     def write_data(self, file_name: str):
         data = self.get_wav_content()

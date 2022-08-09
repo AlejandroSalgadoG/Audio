@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 from Fourier import Time2Freq
 from Wav.WavReader import WavReader
+from Wav.WavReproduce import WavReproducer
 
 window_size = 450
 n_times = 28
@@ -14,11 +15,11 @@ def norm(data):
 def error(x1, x2):
     return sum( (x1 - x2)**2 ) / x1.size
 
-a_data = WavReader(f"Data/vowels/perfect/a.wav").get_data()
-e_data = WavReader(f"Data/vowels/perfect/e.wav").get_data()
-i_data = WavReader(f"Data/vowels/perfect/i.wav").get_data()
-o_data = WavReader(f"Data/vowels/perfect/o.wav").get_data()
-u_data = WavReader(f"Data/vowels/perfect/u.wav").get_data()
+a_data = WavReader(f"Data/vowels/perfect/a/a.wav").get_data()
+e_data = WavReader(f"Data/vowels/perfect/e/e.wav").get_data()
+i_data = WavReader(f"Data/vowels/perfect/i/i.wav").get_data()
+o_data = WavReader(f"Data/vowels/perfect/o/o.wav").get_data()
+u_data = WavReader(f"Data/vowels/perfect/u/u.wav").get_data()
 
 a_freq = Time2Freq.transform(a_data)
 e_freq = Time2Freq.transform(e_data)
@@ -38,6 +39,7 @@ norm_i_amps = norm(i_amps)
 norm_o_amps = norm(o_amps)
 norm_u_amps = norm(u_amps)
 
+wav_reproducer = WavReproducer()
 reader = WavReader(f"Data/vowels/a/a.wav")
 t_data = reader.get_data()
 
@@ -56,7 +58,11 @@ axis["signal"].set_ylim([-6e3, 6e3])
 batch1 = t_data.batch(size=window_size)
 
 for window1 in batch1:
-    freq_data = Time2Freq.transform(window1.repeat(n_times))
+    window1_repeat = window1.repeat(n_times)
+
+    wav_reproducer.reproduce( window1_repeat )
+
+    freq_data = Time2Freq.transform(window1_repeat)
     amps_s = freq_data.get_amplitudes(max_freq=max_freq)
     norm_s_amps = norm(amps_s)
 
